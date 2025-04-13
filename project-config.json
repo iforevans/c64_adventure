@@ -1,0 +1,13 @@
+{
+    "name": "c64_adventure",
+    "description": "Project c64_adventure",
+    "toolkit": "basic",
+    "sources": [
+        "src/main.bas"
+    ],
+    "build": "debug",
+    "definitions": [],
+    "includes": [],
+    "args": [],
+    "compiler": ""
+}
