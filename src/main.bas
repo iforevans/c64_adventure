@@ -1,8 +1,8 @@
 100 REM Text based adventure game for the C64
 110 REM
 200 OL$ = ""
-210 DIM LOCATIONS$(10)
-220 DIM OBJECTS$(10)
+210 DIM LOCS$(10)
+220 DIM OBJS$(10)
 230 OPEN 1,8,2,"gamedata.dat, s"
 240 INPUT#1, OL$
 250 PRINT(OL$)
