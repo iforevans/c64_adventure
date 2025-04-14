@@ -1,4 +1,10 @@
-10 PRINT "{clr}HELLO, WORLD!"
-101 REM Variable declarations
-110 OPEN 1,8,2,"gamedata.dat, s"
-140 CLOSE 1
+100 REM Text based adventure game for the C64
+110 REM
+200 OL$ = ""
+210 DIM LOCATIONS$(10)
+220 DIM OBJECTS$(10)
+230 OPEN 1,8,2,"gamedata.dat, s"
+240 INPUT#1, OL$
+250 PRINT(OL$)
+250 IF STATUS=0 THEN GOTO 240
+260 CLOSE 1
