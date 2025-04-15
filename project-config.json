@@ -1,6 +1,6 @@
 {
-    "name": "c64_adventure",
-    "description": "Project c64_adventure",
+    "name": "adventure",
+    "description": "Project Adventure",
     "toolkit": "basic",
     "sources": [
         "src/main.bas"
