@@ -1,6 +1,8 @@
-100 OPEN 1,8,2,"gamedata,s,r"
-110 INPUT#1, OL$
-120 PRINT OL$
-130 IF ST=0 THEN 320
-140 REM All done
-150 CLOSE 1
+OPEN 1,8,2,"gamedata,s,r"
+
+Readline:
+INPUT#1, OL$
+PRINT OL$
+IF ST=0 THEN Readline
+REM All done
+CLOSE 1
