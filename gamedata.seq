@@ -1,8 +1,0 @@
-LOC,1,Entrance Hall,2,,,
-LOC,2,Main Corridor,,1,3,
-LOC,3,Library,4,,,2
-LOC,4,Secret Chamber,,3,,
-OBJ,1,Key,1
-OBJ,2,Book,3
-OBJ,3,Candle,2
-OBJ,4,Sword,4
