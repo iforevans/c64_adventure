@@ -1,40 +1,46 @@
-DIM lid$(100)
-DIM ldes$(100)
-DIM lno$(100)
-DIM lso$(100)
-DIM lea$(100)
-DIM lwe$(100)
-DIM carried(10)
-lcount=0: ocount=0: icount=0
+REM Hold location details
+DIM ldet$(10,5)
+lde% = 1
+lno% = 2
+lea% = 3
+lso% = 4
+lwe% = 5
 
 REM --- Load Game Data ---
+CO% = 0
 OPEN 1,8,2,"gamedata,s,r"
 Readline:
 INPUT#1, ol$
-IF LEFT$(ol$,3)="LOC" THEN GOSUB HandleLocation
-IF ST=0 THEN Readline:
+IF LEFT$(ol$,3)="LOC" THEN GOSUB HandleLocationLine
+IF ST=0 THEN GOTO Readline:
+
 REM All done
 CLOSE 1
-
-REM All done
 END
 
-REM PROCESS A LOCATION RECORD (CSV: LOC,ID,Description,North,South,East,West)
-HandleLocation:
-lcount = lcount + 1
-GOSUB GetToken  : REM DISCARD "LOC" FIELD
-GOSUB GetToken  : lid$(lcount) = token$
-GOSUB GetToken  : ldes$(lcount) = token$
-GOSUB GetToken  : lno$(lcount) = token$
-GOSUB GetToken  : lso$(lcount) = token$
-GOSUB GetToken  : lea$(lcount) = token$
-GOSUB GetToken  : lwe$(lcount) = token$
+REM PROCESS A LOCATION RECORD (line=LOC,ID,Description,North,South,East,West)
+HandleLocationLine:
+GOSUB GetToken  : ldet$(lcount, lde%) = token$
+GOSUB GetToken  : ldet$(lcount, lno%) = token$
+GOSUB GetToken  : ldet$(lcount, lea%) = token$
+GOSUB GetToken  : ldet$(lcount, lso%) = token$
+GOSUB GetToken  : ldet$(lcount, lwe%) = token$
 RETURN
 
-REM GET TOKEN FROM A$ (CSV DELIMITED BY COMMA)
+REM Get next token from input line
 GetToken:
-dp% = INSTR(ol$, ";")
+dp% = 0
+MainSplitLoop:
+IF dp% <= LEN(ol%) AND MID$(ol$, dp%, dp%) = ";" THEN NextToken
+dp% = dp% +1
+GOTO MainSplitLoop
+
 IF dp% = 0 THEN token$ = ol$: ol$ = "": RETURN
+
+NextToken:
 token$ = LEFT$(ol$, dp% - 1)
 ol$ = MID$(ol$, dp% + 1)
 RETURN
+
+FindStr:
+IF dp% > LEN(ol$) THEN dp% = 0: RETURN
