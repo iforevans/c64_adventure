@@ -1,4 +1,4 @@
-200 OPEN 1,8,2;"GAMEDATA,s,w"
+200 OPEN 1,8,2, "GAMEDATA,s,w"
 210 PRINT#1,"LOC;Entrance Hall;2;;;"
 220 PRINT#1,"LOC;Main Corridor;;1;3;"
 230 PRINT#1,"LOC;Library;4;;;2"
