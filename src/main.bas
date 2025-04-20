@@ -24,7 +24,7 @@ ol$ = RIGHT$(ol$,LEN(ol$)-4) : REM Drop Loc tag
 
 REM Break down location details
 FOR i=0 TO 4
-GOSUB FindStr
+GOSUB FindSemiColon
 ldet$(co%,i)=LEFT$(ol$,dp%-1)
 ol$ = RIGHT$(ol$, LEN(ol$) - dp%)
 NEXT
@@ -32,7 +32,7 @@ NEXT
 REM All done
 RETURN
 
-FindStr:
+FindSemiColon:
 dp%=1
 FindLoop:
 IF MID$(ol$, dp%, 1) = ";" THEN RETURN
