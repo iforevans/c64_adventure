@@ -41,8 +41,3 @@ IF dp%< LEN(ol$) THEN GOTO FindLoop
 dp%=len(ol$)
 RETURN
 
-NextToken:
-token$ = LEFT$(ol$, dp% - 1)
-ol$ = MID$(ol$, dp% + 1)
-RETURN
-
