@@ -20,22 +20,24 @@ END
 
 REM PROCESS A LOCATION RECORD (line=Description,North,South,East,West)
 HandleLocationLine:
-ol$ = RIGHT$(ol$,LEN(ol$)-4)
+ol$ = RIGHT$(ol$,LEN(ol$)-4) : REM Drop Loc tag
 
-REM Save Location Desc
+REM Break down location details
+FOR i=0 TO 4
 GOSUB FindStr
-ldet$(co%,lde%)=LEFT$(ol$,dp%-1)
+ldet$(co%,i)=LEFT$(ol$,dp%-1)
 ol$ = RIGHT$(ol$, LEN(ol$) - dp%)
+NEXT
 
 REM All done
 RETURN
 
 FindStr:
-i%=1
+dp%=1
 FindLoop:
-IF MID$(ol$, i%, 1) = ";" THEN dp%=i%: RETURN
-i%=i%+1
-IF i%< LEN(ol$) THEN goto FindLoop
+IF MID$(ol$, dp%, 1) = ";" THEN RETURN
+dp%=dp%+1
+IF dp%< LEN(ol$) THEN GOTO FindLoop
 dp%=len(ol$)
 RETURN
 
