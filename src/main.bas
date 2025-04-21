@@ -1,11 +1,6 @@
-REM Hold location details
+REM Hold location object details
 DIM ldet$(10,4)
 DIM odet$(10,1)
-lde% = 0
-lno% = 1
-lea% = 2
-lso% = 3
-lwe% = 4
 
 REM --- Load Game Data ---
 oc%=0 :REM object count
@@ -24,9 +19,8 @@ REM All done
 CLOSE 1
 END
 
-REM PROCESS A LOCATION RECORD 
-REM line = Description,North,South,East,West
 ProcessLocationLine:
+REM line = Description,North,South,East,West
 ol$ = RIGHT$(ol$,LEN(ol$)-4) : REM Drop Loc tag
 
 REM Break down location details
@@ -38,9 +32,8 @@ NEXT
 lc%=lc%+1
 RETURN
 
-REM PROCESS AN OBJECT RECORD
-REM line=Description,location
 ProcessObjectLine:
+REM line=Description,location
 ol$ = RIGHT$(ol$,LEN(ol$)-4) : REM Drop Obj tag
 
 REM Break down object details
