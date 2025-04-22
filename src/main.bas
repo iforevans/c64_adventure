@@ -9,12 +9,18 @@ lc%=0 :REM location count
 OPEN 1,8,2,"gamedata,s,r"
 Readline:
 INPUT#1, ol$
-PRINT ol$
-PRINT LEFT$(ol$,3)
 IF LEFT$(ol$,3)="LOC" THEN GOSUB ProcessLocationLine
 IF LEFT$(ol$,3)="OBJ" THEN GOSUB ProcessObjectLine
 IF ST=0 THEN GOTO Readline:
 
+REM Test to see if we stored everything correctly
+FOR i = 0 TO lc%-1
+PRINT ldet$(i, 0);";";
+PRINT ldet$(i, 1);";";
+PRINT ldet$(i, 2);";";
+PRINT ldet$(i, 3);";";
+PRINT ldet$(i, 4);";"
+NEXT i
 REM All done
 CLOSE 1
 END
