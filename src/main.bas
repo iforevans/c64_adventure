@@ -1,5 +1,5 @@
 REM Hold location object details
-DIM ldet$(10,4)
+DIM ldet$(10,6)
 DIM odet$(10,1)
 
 REM --- Load Game Data ---
