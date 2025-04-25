@@ -1,38 +1,47 @@
 REM Hold location object details
-DIM ldet$(10,6)
+DIM ldet$(10,9)
 DIM odet$(10,1)
 
-REM --- Load Game Data ---
-oc%=0 :REM object count
+REM --- Load Location Data ---
 lc%=0 :REM location count
-
-OPEN 1,8,2,"gamedata,s,r"
+OPEN 1,8,2,"locdata,s,r"
 Readline:
 INPUT#1, ol$
-IF LEFT$(ol$,3)="LOC" THEN GOSUB ProcessLocationLine
-IF LEFT$(ol$,3)="OBJ" THEN GOSUB ProcessObjectLine
+IF LEFT$(ol$,3)="LOC" THEN GOSUB ProcessLocationLines
+IF LEFT$(ol$,3)="END" THEN GOSUB ProcessObjectLine
 IF ST=0 THEN GOTO Readline:
 
-REM Test to see if we stored everything correctly
-FOR i = 0 TO lc%-1
-PRINT ldet$(i, 0);";";
-PRINT ldet$(i, 1);";";
-PRINT ldet$(i, 2);";";
-PRINT ldet$(i, 3);";";
-PRINT ldet$(i, 4);";"
-NEXT i
+REM --- Load Location Data ---
+lc%=0 :REM location count
+OPEN 1,8,2,"objdata,s,r"
+Readline:
+INPUT#1, ol$
+IF LEFT$(ol$,3)="LOC" THEN GOSUB ProcessLocationLines
+IF LEFT$(ol$,3)="END" THEN GOTO LocLoadDone
+IF ST=0 THEN GOTO Readline:
 REM All done
+LocLoadDone:
 CLOSE 1
+
+REM --- Load Object Data ---
+oc%=0 :REM location count
+
+REM All Done
 END
 
-ProcessLocationLine:
-REM line = Description,North,South,East,West
-ol$ = RIGHT$(ol$,LEN(ol$)-4) : REM Drop Loc tag
+ProcessLocationLines:
+REM 1st line is short desc
+INPUT#1, ldet$(lc%, 0)
+REM 2nd line is long desc
+INPUT#1, ldet$(lc%, 1)
+REM 3rd line is exits line
+REM exits line = N, E, S, W, U, D, I, O
+INPUT#1, ol$
 
-REM Break down location details
-FOR i=0 TO 4
+REM Break down exits details
+FOR i=0 TO 7
 GOSUB FindSemiColon
-ldet$(lc%,i)=LEFT$(ol$,dp%-1)
+ldet$(lc%,i+2)=LEFT$(ol$,dp%-1)
 ol$ = RIGHT$(ol$, LEN(ol$) - dp%)
 NEXT
 lc%=lc%+1
