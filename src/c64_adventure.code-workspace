@@ -2,6 +2,10 @@
 	"folders": [
 		{
 			"path": ".."
+		},
+		{
+			"name": "D64: VS64DISK (c64_adventure.d64)",
+			"uri": "d64:/94450bc8f2b1ff1f56f52e10418511e3?file:///Users/iforevans/dev/c64/c64_adventure/c64_adventure.d64"
 		}
 	],
 	"settings": {}

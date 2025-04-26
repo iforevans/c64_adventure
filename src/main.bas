@@ -18,6 +18,21 @@ CLOSE 1
 
 REM All Done
 PRINT "All Game Data Loaded ..."
+PRINT "Location Data"
+FOR i=0 TO lc%
+    PRINT ldet$(i,0)
+    PRINT ldet$(i,1)
+    FOR j=0 TO 7
+        PRINT ldet$(i, j+2);
+    NEXT j
+    PRINT
+NEXT i
+PRINT "Object Data"
+FOR i=0 TO oc%
+    PRINT odet$(i,0)
+    PRINT odet$(i,1)
+NEXT i
+
 
 EndProg:
 END
@@ -32,10 +47,10 @@ REM exits line = N, E, S, W, U, D, I, O
 INPUT#1, ol$
 REM Break down exit details
 FOR i=0 TO 7
-GOSUB FindSemiColon
-ldet$(lc%,i+2)=LEFT$(ol$,dp%-1)
-ol$ = RIGHT$(ol$, LEN(ol$) - dp%)
-NEXT
+    GOSUB FindSemiColon
+    ldet$(lc%,i+2)=LEFT$(ol$,dp%-1)
+    ol$ = RIGHT$(ol$, LEN(ol$) - dp%)
+NEXT i
 lc%=lc%+1
 RETURN
 
