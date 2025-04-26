@@ -6,17 +6,20 @@ REM --- Load GameData Data ---
 lc%=0
 oc%=0
 OPEN 1,8,2,"gamedata,s,r"
+
 Readline:
 INPUT#1, ol$
 IF LEFT$(ol$,3)="LOC" THEN GOSUB LoadLocation
 IF LEFT$(ol$,3)="OBJ" THEN GOSUB LoadObject
 IF LEFT$(ol$,3)="END" THEN GOTO LoadDone
-IF ST=0 THEN GOTO Readline:
+IF STATUS=0 THEN GOTO Readline:
 LoadDone:
 CLOSE 1
 
 REM All Done
 PRINT "All Game Data Loaded ..."
+
+EndProg:
 END
 
 LoadLocation:
