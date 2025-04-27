@@ -1,12 +1,28 @@
-REM Hold location object details
-DIM ldet$(10,9)
-DIM odet$(10,2)
+DIM ldet$(10,9) :REM Location details
+DIM odet$(10,2) : REM Object details
+lc%=0 : REM Location count
+oc%=0 : REM Object count
+pl%=0 : REM Player location
 
+GOSUB LoadGameData
+PRINT "All Game Data Loaded ..."
+PRINT "Let's begin ..."
+REM Main program loop
+MainGameLoop:
+PRINT ldet$(pl%, 1)
+INPUT "What would you like to do? "; ol$
+IF ol$ = "quit" THEN GOTO EndProg
+PRINT "Sorry, I don't understand that word"
+GOTO MainGameLoop
+
+EndProg:
+PRINT "Thanks for playing! See you next time."
+REM All Done
+END
+
+LoadGameData:
 REM --- Load GameData Data ---
-lc%=0
-oc%=0
 OPEN 1,8,2,"gamedata,s,r"
-
 Readline:
 INPUT#1, ol$
 IF LEFT$(ol$,3)="LOC" THEN GOSUB LoadLocation
@@ -15,13 +31,7 @@ IF LEFT$(ol$,3)="END" THEN GOTO LoadDone
 IF STATUS=0 THEN GOTO Readline:
 LoadDone:
 CLOSE 1
-
-REM All Done
-PRINT "All Game Data Loaded ..."
-
-
-EndProg:
-END
+RETURN
 
 LoadLocation:
 REM 1st line is short desc
