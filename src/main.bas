@@ -10,10 +10,13 @@ pl%=0 : REM Player location
 verb$=""
 noun$=""
  
-GOSUB LoadGameData
+PRINT CHR$(147) : REM Clear Scr
+PRINT "======================="
 PRINT "Adventure by Ifor Evans"
-PRINT "Let's begin!"
+PRINT "======================="
 PRINT
+
+GOSUB LoadGameData
 REM Main program loop
 MainGameLoop:
 GOSUB ShowCurrentLoc
