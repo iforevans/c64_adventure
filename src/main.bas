@@ -1,6 +1,6 @@
 REM Hold location object details
 DIM ldet$(10,9)
-DIM odet$(10,1)
+DIM odet$(10,2)
 
 REM --- Load GameData Data ---
 lc%=0
@@ -18,23 +18,6 @@ CLOSE 1
 
 REM All Done
 PRINT "All Game Data Loaded ..."
-PRINT "Location Data"
-PRINT "Locs loaded=";: PRINT lc%
-PRINT "Objs loaded=";: PRINT oc%
-FOR i=0 TO lc%-1
-    PRINT ldet$(i,0)
-    PRINT ldet$(i,1)
-    FOR j=0 TO 7
-        PRINT ldet$(i, j+2);
-        PRINT ";";
-    NEXT j
-    PRINT
-NEXT i
-PRINT "Object Data"
-FOR i=0 TO oc%-1
-    PRINT odet$(i,0)
-    PRINT odet$(i,1)
-NEXT i
 
 
 EndProg:
@@ -58,10 +41,12 @@ lc%=lc%+1
 RETURN
 
 LoadObject:
-REM 1st line is short desc
+REM 1st line is objects start loc
 INPUT#1, odet$(oc%, 0)
-REM 2nd line is long desc
+REM 2nd line is short desc
 INPUT#1, odet$(oc%, 1)
+REM 3rd line is long desc
+INPUT#1, odet$(oc%, 2)
 oc%=oc%+1
 RETURN
 
