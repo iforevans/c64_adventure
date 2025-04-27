@@ -3,22 +3,43 @@ DIM odet$(10,2) : REM Object details
 lc%=0 : REM Location count
 oc%=0 : REM Object count
 pl%=0 : REM Player location
+verb$=""
+noun$=""
 
 GOSUB LoadGameData
-PRINT "All Game Data Loaded ..."
-PRINT "Let's begin ..."
+PRINT "Adventure by Ifor Evans"
+PRINT "Let's begin!"
+PRINT
 REM Main program loop
 MainGameLoop:
 PRINT ldet$(pl%, 1)
-INPUT "What would you like to do? "; ol$
-IF ol$ = "quit" THEN GOTO EndProg
-PRINT "Sorry, I don't understand that word"
+ol$="" : REM Just in case the player just presses enter
+INPUT "What would you like to do"; ol$
+GOSUB ParsePlayerInput
+PRINT "verb";:PRINT verb$
+PRINT "noun";:PRINT noun$
+IF verb$ = "quit" THEN GOTO EndProg
+PRINT "Sorry, I don't understand wht you mean!"
 GOTO MainGameLoop
 
 EndProg:
 PRINT "Thanks for playing! See you next time."
 REM All Done
 END
+
+ParsePlayerInput:
+sc$=" "
+verb$=""
+noun$=""
+GOSUB FindChar
+IF dp% = LEN(ol$) THEN GOTO NoSpaceFound
+verb$ = LEFT$(ol$, dp%-1)
+noun$ = RIGHT$(ol$, LEN(ol$) - dp%)
+RETURN
+NoSpaceFound:
+verb$=ol$
+noun$=""
+RETURN
 
 LoadGameData:
 REM --- Load GameData Data ---
@@ -42,8 +63,9 @@ REM 3rd line is exits line
 REM exits line = N, E, S, W, U, D, I, O
 INPUT#1, ol$
 REM Break down exit details
+sc$ = ";"
 FOR i=0 TO 7
-    GOSUB FindSemiColon
+    GOSUB FindChar
     ldet$(lc%,i+2)=LEFT$(ol$,dp%-1)
     ol$ = RIGHT$(ol$, LEN(ol$) - dp%)
 NEXT i
@@ -60,10 +82,10 @@ INPUT#1, odet$(oc%, 2)
 oc%=oc%+1
 RETURN
 
-FindSemiColon:
+FindChar:
 dp%=1
 FindLoop:
-IF MID$(ol$, dp%, 1) = ";" THEN RETURN
+IF MID$(ol$, dp%, 1) = sc$ THEN RETURN
 dp%=dp%+1
 IF dp%< LEN(ol$) THEN GOTO FindLoop
 dp%=len(ol$)
