@@ -1,21 +1,22 @@
-DIM ldet$(10,9) :REM Location details
+DIM ldet$(10,10) :REM Location details
 DIM odet$(10,2) : REM Object details
 REM Directions
 dn%=2:de%=3:ds%=4:dw%=5
 di%=6:do%=7:du%=8:dd%=9
+va%=10 : REM Visited already?
 lc%=0 : REM Location count
 oc%=0 : REM Object count
 pl%=0 : REM Player location
 verb$=""
 noun$=""
-
+ 
 GOSUB LoadGameData
 PRINT "Adventure by Ifor Evans"
 PRINT "Let's begin!"
 PRINT
 REM Main program loop
 MainGameLoop:
-PRINT ldet$(pl%, 1)
+GOSUB ShowCurrentLoc
 ol$="" : REM Just in case the player just presses enter
 INPUT "What next"; ol$
 GOSUB ParsePlayerInput
@@ -28,6 +29,27 @@ EndProg:
 PRINT "Thanks for playing! See you next time."
 REM All Done
 END
+
+ShowCurrentLoc:
+IF ldet$(pl%, va%) = "N" GOTO PrintFullDesc
+PRINT ldet$(pl%, 0)
+GOTO ShowExits
+PrintFullDesc:
+PRINT ldet$(pl%, 1)
+ldet$(pl%,va%) = "Y"
+ShowExits:
+PRINT "Exits:";
+IF ldet$(pl%, dn%) <> "-1" THEN PRINT " North";
+IF ldet$(pl%, de%) <> "-1" THEN PRINT " East";
+IF ldet$(pl%, ds%) <> "-1" THEN PRINT " South";
+IF ldet$(pl%, dw%) <> "-1" THEN PRINT " West";
+IF ldet$(pl%, du%) <> "-1" THEN PRINT " Up";
+IF ldet$(pl%, dd%) <> "-1" THEN PRINT " Down";
+IF ldet$(pl%, di%) <> "-1" THEN PRINT " In";
+IF ldet$(pl%, do%) <> "-1" THEN PRINT " Out";
+PRINT
+RETURN
+
 
 REM Find a way to optimize this!
 HandleGoCommand:
@@ -109,6 +131,7 @@ FOR i=0 TO 7
     ldet$(lc%,i+2)=LEFT$(ol$,dp%-1)
     ol$ = RIGHT$(ol$, LEN(ol$) - dp%)
 NEXT i
+ldet$(lc%, va%) = "N" : REM Set visited already status
 lc%=lc%+1
 RETURN
 
