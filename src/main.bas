@@ -24,6 +24,7 @@ FOR i=0 TO lc%
     PRINT ldet$(i,1)
     FOR j=0 TO 7
         PRINT ldet$(i, j+2);
+        PRINT ";";
     NEXT j
     PRINT
 NEXT i
