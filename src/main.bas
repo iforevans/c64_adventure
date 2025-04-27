@@ -1,5 +1,8 @@
 DIM ldet$(10,9) :REM Location details
 DIM odet$(10,2) : REM Object details
+REM Directions
+dn%=2:de%=3:ds%=4:dw%=5
+di%=6:do%=7:du%=8:dd%=9
 lc%=0 : REM Location count
 oc%=0 : REM Object count
 pl%=0 : REM Player location
@@ -14,18 +17,55 @@ REM Main program loop
 MainGameLoop:
 PRINT ldet$(pl%, 1)
 ol$="" : REM Just in case the player just presses enter
-INPUT "What would you like to do"; ol$
+INPUT "What next"; ol$
 GOSUB ParsePlayerInput
-PRINT "verb";:PRINT verb$
-PRINT "noun";:PRINT noun$
+IF verb$ = "go" THEN GOSUB HandleGoCommand: GOTO MainGameLoop
 IF verb$ = "quit" THEN GOTO EndProg
-PRINT "Sorry, I don't understand wht you mean!"
+PRINT "Sorry, but what?"
 GOTO MainGameLoop
 
 EndProg:
 PRINT "Thanks for playing! See you next time."
 REM All Done
 END
+
+REM Find a way to optimize this!
+HandleGoCommand:
+dir$=Left$(noun$,1)
+IF dir$ <> "n" THEN GOTO CheckEast
+IF VAL(ldet$(pl%,dn%)) = -1 THEN GOTO InvalidDirection
+pl% = VAL(ldet$(pl%,dn%))
+RETURN
+CheckEast:
+IF dir$ <> "e" THEN GOTO CheckSouth
+IF VAL(ldet$(pl%,de%)) = -1 THEN GOTO InvalidDirection
+pl% = VAL(ldet$(pl%,de%))
+RETURN
+CheckSouth:
+IF dir$ <> "s" THEN GOTO CheckWest
+IF VAL(ldet$(pl%,ds%)) = -1 THEN GOTO InvalidDirection
+pl% = VAL(ldet$(pl%,ds%))
+RETURN
+CheckWest:
+IF dir$ <> "w" THEN GOTO CheckIn
+IF VAL(ldet$(pl%,dw%)) = -1 THEN GOTO InvalidDirection
+pl% = VAL(ldet$(pl%,dw%))
+RETURN
+CheckIn:
+IF dir$ <> "i" THEN GOTO CheckOut
+IF VAL(ldet$(pl%,di%)) = -1 THEN GOTO InvalidDirection
+pl% = VAL(ldet$(pl%,di%))
+RETURN
+CheckOut:
+IF dir$ <> "o" THEN GOTO InvalidDirection
+IF VAL(ldet$(pl%,do%)) = -1 THEN GOTO InvalidDirection
+pl% = VAL(ldet$(pl%,do%))
+RETURN
+
+InvalidDirection:
+PRINT "You can't go that way!"
+EndHandleGoCommand:
+RETURN
 
 ParsePlayerInput:
 sc$=" "
