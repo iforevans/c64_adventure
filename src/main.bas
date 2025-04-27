@@ -53,8 +53,7 @@ IF ldet$(pl%, do%) <> "-1" THEN PRINT " Out";
 PRINT
 RETURN
 
-
-REM Find a way to optimize this!
+REM Needs optimization
 HandleGoCommand:
 dir$=Left$(noun$,1)
 IF dir$ <> "n" THEN GOTO CheckEast
@@ -86,7 +85,6 @@ IF dir$ <> "o" THEN GOTO InvalidDirection
 IF VAL(ldet$(pl%,do%)) = -1 THEN GOTO InvalidDirection
 pl% = VAL(ldet$(pl%,do%))
 RETURN
-
 InvalidDirection:
 PRINT "You can't go that way!"
 EndHandleGoCommand:
@@ -156,4 +154,3 @@ dp%=dp%+1
 IF dp%< LEN(ol$) THEN GOTO FindLoop
 dp%=len(ol$)
 RETURN
-
