@@ -1,9 +1,9 @@
-DIM ldet$(10,10) :REM Location details
+DIM ldet$(10,3) :REM Location details
 DIM odet$(10,2) : REM Object details
-REM Directions
-dn%=2:de%=3:ds%=4:dw%=5
-di%=6:do%=7:du%=8:dd%=9
-va%=10 : REM Visited already?
+REM Directions (indices into direction string)
+dn%=1:de%=dn%+2:ds%=dn%+4:dw%=dn%+6
+di%=dn%+8:do%=dn%+10:du%=dn%+12:dd%=dn%+14
+va%=3 : REM Visited already?
 lc%=0 : REM Location count
 oc%=0 : REM Object count
 pl%=0 : REM Player location
@@ -43,21 +43,21 @@ ldet$(pl%,va%) = "Y"
 ShowObjects:
 PRINT "You can also see some items: ";
 FOR i=0 TO oc%-1
-    IF VAL(odet$(i,0)) <> pl% THEN GOTO ObjNotPresent
-    PRINT odet$(i,1);
+    IF VAL(odet$(i,2)) <> pl% THEN GOTO ObjNotPresent
+    PRINT odet$(i,0);
     PRINT " ";
     ObjNotPresent:
 NEXT i
 PRINT
 PRINT "Exits";
-IF ldet$(pl%, dn%) <> "-1" THEN PRINT ". North";
-IF ldet$(pl%, de%) <> "-1" THEN PRINT ". East";
-IF ldet$(pl%, ds%) <> "-1" THEN PRINT ". South";
-IF ldet$(pl%, dw%) <> "-1" THEN PRINT ". West";
-IF ldet$(pl%, du%) <> "-1" THEN PRINT ". Up";
-IF ldet$(pl%, dd%) <> "-1" THEN PRINT ". Down";
-IF ldet$(pl%, di%) <> "-1" THEN PRINT ". In";
-IF ldet$(pl%, do%) <> "-1" THEN PRINT ". Out";
+IF MID$(ldet$(pl%,2), dn%, 2) <> "-1" THEN PRINT ". North";
+IF MID$(ldet$(pl%,2), de%, 2) <> "-1" THEN PRINT ". East";
+IF MID$(ldet$(pl%,2), ds%, 2) <> "-1" THEN PRINT ". South";
+IF MID$(ldet$(pl%,2), dw%, 2) <> "-1" THEN PRINT ". West";
+IF MID$(ldet$(pl%,2), di%, 2) <> "-1" THEN PRINT ". In";
+IF MID$(ldet$(pl%,2), do%, 2) <> "-1" THEN PRINT ". Out";
+IF MID$(ldet$(pl%,2), du%, 2) <> "-1" THEN PRINT ". Up";
+IF MID$(ldet$(pl%,2), dd%, 2) <> "-1" THEN PRINT ". Down";
 PRINT
 RETURN
 
@@ -65,33 +65,39 @@ REM Needs optimization
 HandleGoCommand:
 dir$=Left$(noun$,1)
 IF dir$ <> "n" THEN GOTO CheckEast
-IF VAL(ldet$(pl%,dn%)) = -1 THEN GOTO InvalidDirection
-pl% = VAL(ldet$(pl%,dn%))
+nl% = VAL(MID$(ldet$(pl%,2), dn%, 2))
+IF nl% = -1 THEN GOTO InvalidDirection
+pl% = nl%
 RETURN
 CheckEast:
 IF dir$ <> "e" THEN GOTO CheckSouth
-IF VAL(ldet$(pl%,de%)) = -1 THEN GOTO InvalidDirection
-pl% = VAL(ldet$(pl%,de%))
+nl% = VAL(MID$(ldet$(pl%,2), de%, 2))
+IF nl% = -1 THEN GOTO InvalidDirection
+pl% = nl%
 RETURN
 CheckSouth:
 IF dir$ <> "s" THEN GOTO CheckWest
-IF VAL(ldet$(pl%,ds%)) = -1 THEN GOTO InvalidDirection
-pl% = VAL(ldet$(pl%,ds%))
+nl% = VAL(MID$(ldet$(pl%,2), ds%, 2))
+IF nl% = -1 THEN GOTO InvalidDirection
+pl% = nl%
 RETURN
 CheckWest:
 IF dir$ <> "w" THEN GOTO CheckIn
-IF VAL(ldet$(pl%,dw%)) = -1 THEN GOTO InvalidDirection
-pl% = VAL(ldet$(pl%,dw%))
+nl% = VAL(MID$(ldet$(pl%,2), dw%, 2))
+IF nl% = -1 THEN GOTO InvalidDirection
+pl% = nl%
 RETURN
 CheckIn:
 IF dir$ <> "i" THEN GOTO CheckOut
-IF VAL(ldet$(pl%,di%)) = -1 THEN GOTO InvalidDirection
-pl% = VAL(ldet$(pl%,di%))
+nl% = VAL(MID$(ldet$(pl%,2), di%, 2))
+IF nl% = -1 THEN GOTO InvalidDirection
+pl% = nl%
 RETURN
 CheckOut:
 IF dir$ <> "o" THEN GOTO InvalidDirection
-IF VAL(ldet$(pl%,do%)) = -1 THEN GOTO InvalidDirection
-pl% = VAL(ldet$(pl%,do%))
+nl% = VAL(MID$(ldet$(pl%,2), do%, 2))
+IF nl% = -1 THEN GOTO InvalidDirection
+pl% = nl%
 RETURN
 InvalidDirection:
 PRINT "You can't go that way!"
@@ -131,15 +137,8 @@ INPUT#1, ldet$(lc%, 0)
 REM 2nd line is long desc
 INPUT#1, ldet$(lc%, 1)
 REM 3rd line is exits line
-REM exits line = N, E, S, W, U, D, I, O
-INPUT#1, ol$
-REM Break down exit details
-sc$ = ";"
-FOR i=0 TO 7
-    GOSUB FindChar
-    ldet$(lc%,i+2)=LEFT$(ol$,dp%-1)
-    ol$ = RIGHT$(ol$, LEN(ol$) - dp%)
-NEXT i
+REM NESWIOUP - two chars per direction
+INPUT#1, ldet$(lc%, 2)
 ldet$(lc%, va%) = "N" : REM Set visited already status
 lc%=lc%+1
 RETURN
