@@ -10,15 +10,17 @@ pl%=0 : REM Player location
 verb$=""
 noun$=""
  
-GOSUB DisplaySetup
 GOSUB LoadGameData
+GOSUB DisplaySetup
+GOSUB ShowCurrentLoc
+
 REM Main program loop
 MainGameLoop:
-GOSUB ShowCurrentLoc
 ol$="" : REM Just in case the player just presses enter
 INPUT "What next"; ol$
 GOSUB ParsePlayerInput
 IF verb$ = "go" THEN GOSUB HandleGoCommand: GOTO MainGameLoop
+IF verb$ = "look" THEN GOSUB HandleLookCommand: GOTO MainGameLoop
 IF verb$ = "quit" THEN GOTO EndProg
 PRINT "Sorry, but what?"
 GOTO MainGameLoop
@@ -56,6 +58,11 @@ IF MID$(ldet$(pl%,2), dd%, 2) <> "-1" THEN PRINT ". Down";
 PRINT
 RETURN
 
+HandleLookCommand:
+ldet$(pl%, va%) = "N"
+GOTO ShowCurrentLoc
+RETURN
+
 REM Needs optimization
 HandleGoCommand:
 dir$=Left$(noun$,1)
@@ -63,40 +70,42 @@ IF dir$ <> "n" THEN GOTO CheckEast
 nl% = VAL(MID$(ldet$(pl%,2), dn%, 2))
 IF nl% = -1 THEN GOTO InvalidDirection
 pl% = nl%
-RETURN
+GOTO ValidDirection
 CheckEast:
 IF dir$ <> "e" THEN GOTO CheckSouth
 nl% = VAL(MID$(ldet$(pl%,2), de%, 2))
 IF nl% = -1 THEN GOTO InvalidDirection
 pl% = nl%
-RETURN
+GOTO ValidDirection
 CheckSouth:
 IF dir$ <> "s" THEN GOTO CheckWest
 nl% = VAL(MID$(ldet$(pl%,2), ds%, 2))
 IF nl% = -1 THEN GOTO InvalidDirection
 pl% = nl%
-RETURN
+GOTO ValidDirection
 CheckWest:
 IF dir$ <> "w" THEN GOTO CheckIn
 nl% = VAL(MID$(ldet$(pl%,2), dw%, 2))
 IF nl% = -1 THEN GOTO InvalidDirection
 pl% = nl%
-RETURN
+GOTO ValidDirection
 CheckIn:
 IF dir$ <> "i" THEN GOTO CheckOut
 nl% = VAL(MID$(ldet$(pl%,2), di%, 2))
 IF nl% = -1 THEN GOTO InvalidDirection
 pl% = nl%
-RETURN
+GOTO ValidDirection
 CheckOut:
 IF dir$ <> "o" THEN GOTO InvalidDirection
 nl% = VAL(MID$(ldet$(pl%,2), do%, 2))
 IF nl% = -1 THEN GOTO InvalidDirection
 pl% = nl%
-RETURN
+GOTO ValidDirection
 InvalidDirection:
 PRINT "You can't go that way!"
-EndHandleGoCommand:
+RETURN
+ValidDirection:
+GOSUB ShowCurrentLoc
 RETURN
 
 ParsePlayerInput:
