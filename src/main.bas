@@ -10,13 +10,7 @@ pl%=0 : REM Player location
 verb$=""
 noun$=""
  
-GOSUB DsiplaySetup
-PRINT CHR$(147) : REM Clear Scr
-PRINT "======================="
-PRINT "Adventure by Ifor Evans"
-PRINT "======================="
-PRINT
-
+GOSUB DisplaySetup
 GOSUB LoadGameData
 REM Main program loop
 MainGameLoop:
@@ -163,16 +157,18 @@ IF dp%< LEN(ol$) THEN GOTO FindLoop
 dp%=len(ol$)
 RETURN
 
-DsiplaySetup:
+DisplaySetup:
 REM Set foreground/background colours
 POKE 53281,6 : POKE 53280,6
 
-REM LIGHT BLUE, WHITE
+REM Some useful colours
 LB$=CHR$(154): WT$=CHR$(5)
-REM YELLOW AND CYAN
 YL$=CHR$(158): CY$=CHR$(159):
-REM REVERSE ON AND OFF TO MAKE LISTING THE CODE EASIER
-RV$=CHR$(18): RO$=CHR$(146): BL$=CHR$(13) + CHR$(187) + CHR$(32)
+
 REM CLEAR SCREEN, WHITE TEXT
 PRINT WT$: PRINT CHR$(147): PRINT CHR$(19);
+PRINT "======================="
+PRINT "Adventure by Ifor Evans"
+PRINT "======================="
+PRINT
 RETURN
