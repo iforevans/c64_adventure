@@ -36,20 +36,28 @@ END
 ShowCurrentLoc:
 IF ldet$(pl%, va%) = "N" GOTO PrintFullDesc
 PRINT ldet$(pl%, 0)
-GOTO ShowExits
+GOTO ShowObjects
 PrintFullDesc:
 PRINT ldet$(pl%, 1)
 ldet$(pl%,va%) = "Y"
-ShowExits:
-PRINT "Exits:";
-IF ldet$(pl%, dn%) <> "-1" THEN PRINT " North";
-IF ldet$(pl%, de%) <> "-1" THEN PRINT " East";
-IF ldet$(pl%, ds%) <> "-1" THEN PRINT " South";
-IF ldet$(pl%, dw%) <> "-1" THEN PRINT " West";
-IF ldet$(pl%, du%) <> "-1" THEN PRINT " Up";
-IF ldet$(pl%, dd%) <> "-1" THEN PRINT " Down";
-IF ldet$(pl%, di%) <> "-1" THEN PRINT " In";
-IF ldet$(pl%, do%) <> "-1" THEN PRINT " Out";
+ShowObjects:
+PRINT "You can also see some items: ";
+FOR i=0 TO oc%-1
+    IF VAL(odet$(i,0)) <> pl% THEN GOTO ObjNotPresent
+    PRINT odet$(i,1);
+    PRINT " ";
+    ObjNotPresent:
+NEXT i
+PRINT
+PRINT "Exits";
+IF ldet$(pl%, dn%) <> "-1" THEN PRINT ". North";
+IF ldet$(pl%, de%) <> "-1" THEN PRINT ". East";
+IF ldet$(pl%, ds%) <> "-1" THEN PRINT ". South";
+IF ldet$(pl%, dw%) <> "-1" THEN PRINT ". West";
+IF ldet$(pl%, du%) <> "-1" THEN PRINT ". Up";
+IF ldet$(pl%, dd%) <> "-1" THEN PRINT ". Down";
+IF ldet$(pl%, di%) <> "-1" THEN PRINT ". In";
+IF ldet$(pl%, do%) <> "-1" THEN PRINT ". Out";
 PRINT
 RETURN
 
