@@ -25,8 +25,9 @@ INPUT "What next"; ol$
 GOSUB ParsePlayerInput
 IF verb$ = "go" THEN GOSUB HandleGoCommand: GOTO MainGameLoop
 IF verb$ = "look" THEN GOSUB HandleLookCommand: GOTO MainGameLoop
-IF verb$ = "get" THEN GOSUB HandleGetCommand: GOTO MainGameLoop
 IF verb$ = "inv" THEN GOSUB HandleInvCommand: GOTO MainGameLoop
+IF verb$ = "get" THEN GOSUB HandleGetCommand: GOTO MainGameLoop
+IF verb$ = "drop" THEN GOSUB HandleDropCommand: GOTO MainGameLoop
 IF verb$ = "quit" THEN GOTO EndProg
 PRINT "Sorry, but what?"
 GOTO MainGameLoop
@@ -64,13 +65,40 @@ IF MID$(ldet$(pl%,2), dd%, 2) <> "-1" THEN PRINT ". Down";
 PRINT
 RETURN
 
+HandleDropCommand:
+REM Find the object
+oi% = -1
+FOR i=0 To oc%
+    IF odet$(i, 0) = noun$ THEN oi%=i:i=oc%
+NEXT i
+REM Object exists?
+IF oi% = -1 THEN GOTO hdcInvalidRequest:
+REM Player already carrying it?
+IF odet$(oi%, 2) = "-1" THEN GOTO hdcAlreadyCarried:
+REM Object is in players location?
+IF pl% <> VAL(odet$(oi%, 2)) THEN GOTO hdcInvalidRequest
+REM obj exists, not already carried, and here!
+odet$(oi%, 2) = "-1"
+PRINT "You get the ";
+PRINT noun$
+RETURN
+hdcAlreadyCarried:
+PRINT "You already have the ";
+PRINT noun$
+RETURN
+hdcInvalidGetRequest:
+PRINT "I don't see a ";
+PRINT  noun$;
+PRINT " here!"
+RETURN
+
 HandleInvCommand:
 PRINT "You are carrying: "
 FOR i=0 To oc%
-    IF odet$(i, 2) <> "-1" THEN GOTO InvLoop
+    IF odet$(i, 2) <> "-1" THEN GOTO hicNext
     PRINT odet$(i, 0); 
     PRINT " "
-InvLoop:
+hicNext:
 NEXT i
 RETURN
 
@@ -81,21 +109,21 @@ FOR i=0 To oc%
     IF odet$(i, 0) = noun$ THEN oi%=i:i=oc%
 NEXT i
 REM Object exists?
-IF oi% = -1 THEN GOTO InvalidGetRequest:
+IF oi% = -1 THEN GOTO hgcInvalidRequest:
 REM Player already carrying it?
-IF odet$(oi%, 2) = "-1" THEN GOTO AlreadyCarried
+IF odet$(oi%, 2) = "-1" THEN GOTO hgcAlreadyCarried
 REM Object is in players location?
-IF pl% <> VAL(odet$(oi%, 2)) THEN GOTO InvalidGetRequest
+IF pl% <> VAL(odet$(oi%, 2)) THEN GOTO hgcInvalidRequest
 REM obj exists, not already carried, and here!
 odet$(oi%, 2) = "-1"
 PRINT "You get the ";
 PRINT noun$
 RETURN
-AlreadyCarried:
+hgcAlreadyCarried:
 PRINT "You already have the ";
 PRINT noun$
 RETURN
-InvalidGetRequest:
+hgcInvalidRequest:
 PRINT "I don't see a ";
 PRINT  noun$;
 PRINT " here!"
@@ -111,43 +139,43 @@ HandleGoCommand:
 dir$=Left$(noun$,1)
 IF dir$ <> "n" THEN GOTO CheckEast
 nl% = VAL(MID$(ldet$(pl%,2), dn%, 2))
-IF nl% = -1 THEN GOTO InvalidDirection
+IF nl% = -1 THEN GOTO hgcInvalidDirection
 pl% = nl%
-GOTO ValidDirection
+GOTO hgcValidDirection
 CheckEast:
 IF dir$ <> "e" THEN GOTO CheckSouth
 nl% = VAL(MID$(ldet$(pl%,2), de%, 2))
-IF nl% = -1 THEN GOTO InvalidDirection
+IF nl% = -1 THEN GOTO hgcInvalidDirection
 pl% = nl%
-GOTO ValidDirection
+GOTO hgcValidDirection
 CheckSouth:
 IF dir$ <> "s" THEN GOTO CheckWest
 nl% = VAL(MID$(ldet$(pl%,2), ds%, 2))
-IF nl% = -1 THEN GOTO InvalidDirection
+IF nl% = -1 THEN GOTO hgcInvalidDirection
 pl% = nl%
-GOTO ValidDirection
+GOTO hgcValidDirection
 CheckWest:
 IF dir$ <> "w" THEN GOTO CheckIn
 nl% = VAL(MID$(ldet$(pl%,2), dw%, 2))
-IF nl% = -1 THEN GOTO InvalidDirection
+IF nl% = -1 THEN GOTO hgcInvalidDirection
 pl% = nl%
-GOTO ValidDirection
+GOTO hgcValidDirection
 CheckIn:
 IF dir$ <> "i" THEN GOTO CheckOut
 nl% = VAL(MID$(ldet$(pl%,2), di%, 2))
-IF nl% = -1 THEN GOTO InvalidDirection
+IF nl% = -1 THEN GOTO hgcInvalidDirection
 pl% = nl%
-GOTO ValidDirection
+GOTO hgcValidDirection
 CheckOut:
-IF dir$ <> "o" THEN GOTO InvalidDirection
+IF dir$ <> "o" THEN GOTO hgcInvalidDirection
 nl% = VAL(MID$(ldet$(pl%,2), do%, 2))
-IF nl% = -1 THEN GOTO InvalidDirection
+IF nl% = -1 THEN GOTO hgcInvalidDirection
 pl% = nl%
-GOTO ValidDirection
-InvalidDirection:
+GOTO hgcValidDirection
+hgcInvalidDirection:
 PRINT "You can't go that way!"
 RETURN
-ValidDirection:
+hgcValidDirection:
 GOSUB ShowCurrentLoc
 RETURN
 
@@ -156,11 +184,11 @@ sc$=" "
 verb$=""
 noun$=""
 GOSUB FindChar
-IF dp% = LEN(ol$) THEN GOTO NoSpaceFound
+IF dp% = LEN(ol$) THEN GOTO ppiNoSpaceFound
 verb$ = LEFT$(ol$, dp%-1)
 noun$ = RIGHT$(ol$, LEN(ol$) - dp%)
 RETURN
-NoSpaceFound:
+ppiNoSpaceFound:
 verb$=ol$
 noun$=""
 RETURN
@@ -168,13 +196,13 @@ RETURN
 LoadGameData:
 REM --- Load GameData Data ---
 OPEN 1,8,2,"gamedata,s,r"
-Readline:
+lgdReadline:
 INPUT#1, ol$
 IF LEFT$(ol$,3)="LOC" THEN GOSUB LoadLocation
 IF LEFT$(ol$,3)="OBJ" THEN GOSUB LoadObject
-IF LEFT$(ol$,3)="END" THEN GOTO LoadDone
-IF STATUS=0 THEN GOTO Readline:
-LoadDone:
+IF LEFT$(ol$,3)="END" THEN GOTO lgdLoadDone
+IF STATUS=0 THEN GOTO lgdReadline:
+lgdLoadDone:
 CLOSE 1
 RETURN
 
@@ -202,10 +230,10 @@ RETURN
 
 FindChar:
 dp%=1
-FindLoop:
+fcLoop:
 IF MID$(ol$, dp%, 1) = sc$ THEN RETURN
 dp%=dp%+1
-IF dp%< LEN(ol$) THEN GOTO FindLoop
+IF dp%< LEN(ol$) THEN GOTO fcLoop
 dp%=len(ol$)
 RETURN
 
