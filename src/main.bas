@@ -7,6 +7,7 @@ di%=dn%+8:do%=dn%+10:du%=dn%+12:dd%=dn%+14
 va%=3 : REM Visited already?
 lc%=0 : REM Location count
 oc%=0 : REM Object count
+ca%=-1 : REM Object is carried
 pl%=0 : REM Player location
 verb$=""
 noun$=""
@@ -19,10 +20,13 @@ GOSUB ShowCurrentLoc
 REM Main program loop
 MainGameLoop:
 ol$="" : REM Just in case the player just presses enter
+PRINT
 INPUT "What next"; ol$
 GOSUB ParsePlayerInput
 IF verb$ = "go" THEN GOSUB HandleGoCommand: GOTO MainGameLoop
 IF verb$ = "look" THEN GOSUB HandleLookCommand: GOTO MainGameLoop
+IF verb$ = "get" THEN GOSUB HandleGetCommand: GOTO MainGameLoop
+IF verb$ = "inv" THEN GOSUB HandleInvCommand: GOTO MainGameLoop
 IF verb$ = "quit" THEN GOTO EndProg
 PRINT "Sorry, but what?"
 GOTO MainGameLoop
@@ -34,11 +38,9 @@ END
 
 ShowCurrentLoc:
 IF ldet$(pl%, va%) = "N" GOTO PrintFullDesc
-PRINT
 PRINT ldet$(pl%, 0)
 GOTO ShowObjects
 PrintFullDesc:
-PRINT
 PRINT ldet$(pl%, 1)
 ldet$(pl%,va%) = "Y"
 ShowObjects:
@@ -60,6 +62,43 @@ IF MID$(ldet$(pl%,2), do%, 2) <> "-1" THEN PRINT ". Out";
 IF MID$(ldet$(pl%,2), du%, 2) <> "-1" THEN PRINT ". Up";
 IF MID$(ldet$(pl%,2), dd%, 2) <> "-1" THEN PRINT ". Down";
 PRINT
+RETURN
+
+HandleInvCommand:
+PRINT "You are carrying: "
+FOR i=0 To oc%
+    IF odet$(i, 2) <> "-1" THEN GOTO InvLoop
+    PRINT odet$(i, 0); 
+    PRINT " "
+InvLoop:
+NEXT i
+RETURN
+
+HandleGetCommand:
+REM Find the object
+oi% = -1
+FOR i=0 To oc%
+    IF odet$(i, 0) = noun$ THEN oi%=i:i=oc%
+NEXT i
+REM Object exists?
+IF oi% = -1 THEN GOTO InvalidGetRequest:
+REM Player already carrying it?
+IF odet$(oi%, 2) = "-1" THEN GOTO AlreadyCarried
+REM Object is in players location?
+IF pl% <> VAL(odet$(oi%, 2)) THEN GOTO InvalidGetRequest
+REM obj exists, not already carried, and here!
+odet$(oi%, 2) = "-1"
+PRINT "You get the ";
+PRINT noun$
+RETURN
+AlreadyCarried:
+PRINT "You already have the ";
+PRINT noun$
+RETURN
+InvalidGetRequest:
+PRINT "I don't see a ";
+PRINT  noun$;
+PRINT " here!"
 RETURN
 
 HandleLookCommand:
