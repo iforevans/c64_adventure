@@ -74,32 +74,15 @@ NEXT i
 REM Object exists?
 IF oi% = -1 THEN GOTO hdcInvalidRequest:
 REM Player already carrying it?
-IF odet$(oi%, 2) = "-1" THEN GOTO hdcAlreadyCarried:
-REM Object is in players location?
-IF pl% <> VAL(odet$(oi%, 2)) THEN GOTO hdcInvalidRequest
-REM obj exists, not already carried, and here!
-odet$(oi%, 2) = "-1"
-PRINT "You get the ";
+IF odet$(oi%, 2) <> "-1" THEN GOTO hdcInvalidRequest:
+REM obj exists, and is carried
+odet$(oi%, 2) = STR$(pl%)
+PRINT "You drop the ";
 PRINT noun$
 RETURN
-hdcAlreadyCarried:
-PRINT "You already have the ";
-PRINT noun$
-RETURN
-hdcInvalidGetRequest:
-PRINT "I don't see a ";
+hdcInvalidRequest:
+PRINT "You don't have a ";
 PRINT  noun$;
-PRINT " here!"
-RETURN
-
-HandleInvCommand:
-PRINT "You are carrying: "
-FOR i=0 To oc%
-    IF odet$(i, 2) <> "-1" THEN GOTO hicNext
-    PRINT odet$(i, 0); 
-    PRINT " "
-hicNext:
-NEXT i
 RETURN
 
 HandleGetCommand:
@@ -127,6 +110,16 @@ hgcInvalidRequest:
 PRINT "I don't see a ";
 PRINT  noun$;
 PRINT " here!"
+RETURN
+
+HandleInvCommand:
+PRINT "You are carrying: "
+FOR i=0 To oc%
+    IF odet$(i, 2) <> "-1" THEN GOTO hicNext
+    PRINT odet$(i, 0); 
+    PRINT " "
+hicNext:
+NEXT i
 RETURN
 
 HandleLookCommand:
