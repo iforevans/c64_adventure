@@ -160,8 +160,20 @@ IF nl% = -1 THEN GOTO hgcInvalidDirection
 pl% = nl%
 GOTO hgcValidDirection
 CheckOut:
-IF dir$ <> "o" THEN GOTO hgcInvalidDirection
+IF dir$ <> "o" THEN GOTO CheckUp
 nl% = VAL(MID$(ldet$(pl%,2), do%, 2))
+IF nl% = -1 THEN GOTO hgcInvalidDirection
+pl% = nl%
+GOTO hgcValidDirection
+CheckUp:
+IF dir$ <> "u" THEN GOTO CheckDown:
+nl% = VAL(MID$(ldet$(pl%,2), du%, 2))
+IF nl% = -1 THEN GOTO hgcInvalidDirection
+pl% = nl%
+GOTO hgcValidDirection
+CheckDown:
+IF dir$ <> "d" THEN GOTO hgcInvalidDirection
+nl% = VAL(MID$(ldet$(pl%,2), dd%, 2))
 IF nl% = -1 THEN GOTO hgcInvalidDirection
 pl% = nl%
 GOTO hgcValidDirection
