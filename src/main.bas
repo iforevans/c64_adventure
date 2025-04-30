@@ -1,3 +1,4 @@
+REM Variables setup
 DIM ldet$(10,3) :REM Location details
 DIM odet$(10,2) : REM Object details
 REM Directions (indices into direction string)
@@ -10,6 +11,7 @@ pl%=0 : REM Player location
 verb$=""
 noun$=""
  
+REM Game Setup
 GOSUB LoadGameData
 GOSUB DisplaySetup
 GOSUB ShowCurrentLoc
@@ -32,13 +34,15 @@ END
 
 ShowCurrentLoc:
 IF ldet$(pl%, va%) = "N" GOTO PrintFullDesc
+PRINT
 PRINT ldet$(pl%, 0)
 GOTO ShowObjects
 PrintFullDesc:
+PRINT
 PRINT ldet$(pl%, 1)
 ldet$(pl%,va%) = "Y"
 ShowObjects:
-PRINT "You can also see some items: ";
+PRINT "You can also see: ";
 FOR i=0 TO oc%-1
     IF VAL(odet$(i,2)) <> pl% THEN GOTO ObjNotPresent
     PRINT odet$(i,0);
