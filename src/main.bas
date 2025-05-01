@@ -1,6 +1,13 @@
+REM Some useful codes
+LB$=CHR$(154): REM Light Blue
+WT$=CHR$(5): REM White
+HO$=CHR$(19) : REM Home
+CL$=CHR$(147) : REM CLS
+
 REM Variables setup
 DIM ldet$(10,3) :REM Location details
 DIM odet$(10,2) : REM Object details
+
 REM Directions (indices into direction string)
 dn%=1:de%=dn%+2:ds%=dn%+4:dw%=dn%+6
 di%=dn%+8:do%=dn%+10:du%=dn%+12:dd%=dn%+14
@@ -243,17 +250,14 @@ dp%=len(ol$)
 RETURN
 
 DisplaySetup:
-REM Set foreground/background colours
+REM Set foreground/background colours (blue)
 POKE 53281,6 : POKE 53280,6
-
-REM Some useful colours
-LB$=CHR$(154): WT$=CHR$(5)
-YL$=CHR$(158): CY$=CHR$(159):
-
 REM CLEAR SCREEN, WHITE TEXT
-PRINT WT$: PRINT CHR$(147): PRINT CHR$(19);
+PRINT CL$: PRINT HO$
+PRINT WT$
 PRINT "======================="
 PRINT "Adventure by Ifor Evans"
+PRINT "         V1.0"
 PRINT "======================="
 PRINT
 RETURN
